@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\public",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\Navbar",
+    "\\src\\components\\Sidepannel",
+    "\\src\\components\\Webmap"
+  ],
+  "SelectedNode": "\\src\\components\\Webmap\\Webmap.js",
+  "PreviewInSolutionExplorer": false
+}
