@@ -5,18 +5,22 @@ import './Webmap.css';
 
 import { adminBoundID } from '../../config.js'
 
-class Webmap extends Component {
-  
-  componentDidMount() {
-    const options = {
-      url: 'https://js.arcgis.com/4.6/'
-    }
+const options = {url: 'https://js.arcgis.com/4.6/'};
 
+class Webmap extends Component {
+  constructor (props) {
+    super(props);
+	  this.state = {
+	     view: {}
+	    }
+  }
+
+  componentDidMount() {
     esriLoader.loadModules([
       'esri/views/MapView',
       'esri/Map',
       'esri/layers/MapImageLayer',
-	  'esri/Graphic'], options)
+	    'esri/Graphic'], options)
     .then(([MapView, Map, MapImageLayer, Graphic]) => {
       var newMap = new Map({
         basemap: 'streets',
@@ -29,6 +33,8 @@ class Webmap extends Component {
         center: [-114.182650, 45.055278]
       });
 
+      this.setState({view});
+
       var layer = new MapImageLayer({
         url: adminBoundID,
         sublayers: [{
@@ -36,7 +42,7 @@ class Webmap extends Component {
           visible: false
         },{
           id: 1,
-          visible: false
+          visible: true
         }, {
           id: 0,
           visible: false
@@ -44,33 +50,42 @@ class Webmap extends Component {
       });
 
       newMap.add(layer);
-
-	  view.on("click", function(event){
-	    console.log(event);
-	    var graphic = new Graphic({
-		  geometry: event.mapPoint,
-		  symbol: {
-		    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-		    color: "blue",
-		    size: 8,
-		    outline: {  // autocasts as new SimpleLineSymbol()
-			  width: 0.5,
-			  color: "darkblue"
-		    }
-		  }
-	    });
-      view.graphics.add(graphic);
-	  });
     });
   }
 
   componentWillReceiveProps(nextProps) {
-	var {addressesToLocate} = nextProps;
+  	var {addressesToLocate} = nextProps;
+    esriLoader.loadModules([
+      'esri/Graphic'
+    ], options)
+    .then(([Graphic]) => {
+      addressesToLocate.forEach(address => {
+        var {coordinates, type} = address.point;
 
-	test(addressesToLocate);
+        var point = {
+          type: type.toLowerCase(),
+          latitude: coordinates[0],
+          longitude: coordinates[1]
+        }
+        console.log(point);
 
-  	
-  }
+        var graphic = new Graphic({
+          geometry: point,
+      		  symbol: {
+      		    type: "simple-marker",
+      		    color: "blue",
+      		    size: 8,
+      		    outline: {
+      			  width: 0.5,
+      			  color: "darkblue"
+      		    }
+      		  }
+  	    });
+        console.log(graphic);
+        this.state.view.graphics.add(graphic);
+      });
+	   });
+  };
 
   render() {
     return (

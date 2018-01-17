@@ -7,13 +7,13 @@ import {bingKey} from '../../config.js';
 class Sidepannel extends Component {
   constructor (props) {
     super(props);
-	this.state = {
-	  queryStr: '',
-	  queryStrVis: '',
-	  suggestedAddrs: [],
-	}
+	  this.state = {
+	     queryStr: '',
+	     queryStrVis: '',
+	     suggestedAddrs: []
+	    }
   }
- 
+
  getAddress = (queryStr) => {
 	var queryStrVis = queryStr;
 
