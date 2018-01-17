@@ -6,7 +6,7 @@ import './Webmap.css';
 import { adminBoundID } from '../../config.js'
 
 class Webmap extends Component {
-
+  
   componentDidMount() {
     const options = {
       url: 'https://js.arcgis.com/4.6/'
@@ -15,8 +15,9 @@ class Webmap extends Component {
     esriLoader.loadModules([
       'esri/views/MapView',
       'esri/Map',
-      'esri/layers/MapImageLayer'], options)
-    .then(([MapView, Map, MapImageLayer]) => {
+      'esri/layers/MapImageLayer',
+	  'esri/Graphic'], options)
+    .then(([MapView, Map, MapImageLayer, Graphic]) => {
       var newMap = new Map({
         basemap: 'streets',
       });
@@ -43,10 +44,35 @@ class Webmap extends Component {
       });
 
       newMap.add(layer);
+
+	  view.on("click", function(event){
+	    console.log(event);
+	    var graphic = new Graphic({
+		  geometry: event.mapPoint,
+		  symbol: {
+		    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+		    color: "blue",
+		    size: 8,
+		    outline: {  // autocasts as new SimpleLineSymbol()
+			  width: 0.5,
+			  color: "darkblue"
+		    }
+		  }
+	    });
+      view.graphics.add(graphic);
+	  });
     });
   }
+
+  componentWillReceiveProps(nextProps) {
+	var {addressesToLocate} = nextProps;
+
+	test(addressesToLocate);
+
+  	
+  }
+
   render() {
- 
     return (
       <div id="map-container">
       </div>
