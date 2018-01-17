@@ -11,7 +11,8 @@ class Webmap extends Component {
   constructor (props) {
     super(props);
 	  this.state = {
-	     view: {}
+	     view: {},
+			 newMap: {}
 	    }
   }
 
@@ -19,9 +20,9 @@ class Webmap extends Component {
     esriLoader.loadModules([
       'esri/views/MapView',
       'esri/Map',
-      'esri/layers/MapImageLayer',
-	    'esri/Graphic'], options)
-    .then(([MapView, Map, MapImageLayer, Graphic]) => {
+      'esri/layers/MapImageLayer'
+			], options)
+    .then(([MapView, Map, MapImageLayer]) => {
       var newMap = new Map({
         basemap: 'streets',
       });
@@ -33,8 +34,6 @@ class Webmap extends Component {
         center: [-114.182650, 45.055278]
       });
 
-      this.setState({view});
-
       var layer = new MapImageLayer({
         url: adminBoundID,
         sublayers: [{
@@ -42,7 +41,7 @@ class Webmap extends Component {
           visible: false
         },{
           id: 1,
-          visible: true
+          visible: false
         }, {
           id: 0,
           visible: false
@@ -50,41 +49,89 @@ class Webmap extends Component {
       });
 
       newMap.add(layer);
+
+			this.setState({view, newMap});
     });
   }
 
   componentWillReceiveProps(nextProps) {
   	var {addressesToLocate} = nextProps;
-    esriLoader.loadModules([
-      'esri/Graphic'
-    ], options)
-    .then(([Graphic]) => {
-      addressesToLocate.forEach(address => {
-        var {coordinates, type} = address.point;
 
-        var point = {
-          type: type.toLowerCase(),
-          latitude: coordinates[0],
-          longitude: coordinates[1]
-        }
-        console.log(point);
+		if (addressesToLocate.length > 1) {
+			esriLoader.loadModules([
+				'esri/Graphic'
+				], options)
+			.then(([Graphic]) => {
+				addressesToLocate.forEach(address => {
+					var {coordinates, type} = address.point;
 
-        var graphic = new Graphic({
-          geometry: point,
-      		  symbol: {
-      		    type: "simple-marker",
-      		    color: "blue",
-      		    size: 8,
-      		    outline: {
-      			  width: 0.5,
-      			  color: "darkblue"
-      		    }
-      		  }
-  	    });
-        console.log(graphic);
-        this.state.view.graphics.add(graphic);
-      });
-	   });
+					var point = {
+						type: type.toLowerCase(),
+						latitude: coordinates[0],
+						longitude: coordinates[1]
+					}
+
+					var graphic = new Graphic({
+						geometry: point,
+						symbol: {
+      				type: "simple-marker",
+      				color: "blue",
+      				size: 8,
+      				outline: {
+      					width: 0.5,
+      					color: "darkblue"
+      				}
+						}
+  				});
+
+					this.state.view.graphics.add(graphic);
+				});
+			});
+		} else {
+			esriLoader.loadModules([
+				'esri/Graphic',
+				'esri/PopupTemplate'
+				], options)
+			.then(([Graphic, PopupTemplate]) => {
+				addressesToLocate.forEach(address => {
+					var {coordinates, type} = address.point;
+
+					var point = {
+						type: type.toLowerCase(),
+						latitude: coordinates[0],
+						longitude: coordinates[1]
+					};
+
+					var attributes = {
+						fullAddress: address.address.formattedAddress,
+						confidence: address.confidence
+					};
+
+					var popup = new PopupTemplate({
+						title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>"
+					});
+
+					var graphic = new Graphic({
+						geometry: point,
+						attributes: attributes,
+						symbol: {
+      				type: "simple-marker",
+      				color: "blue",
+      				size: 8,
+      				outline: {
+      					width: 0.5,
+      					color: "darkblue"
+      				}
+						},
+						popupTemplate: popup
+  				});
+
+					this.state.view.graphics.add(graphic);
+
+				});
+			});
+		}
+    
   };
 
   render() {
