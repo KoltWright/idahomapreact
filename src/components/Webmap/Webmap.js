@@ -12,7 +12,8 @@ class Webmap extends Component {
     super(props);
 	  this.state = {
 	     view: {},
-			 newMap: {}
+			 newMap: {},
+       zoomed: false
 	    }
   }
 
@@ -20,9 +21,8 @@ class Webmap extends Component {
     esriLoader.loadModules([
       'esri/views/MapView',
       'esri/Map',
-      'esri/layers/MapImageLayer'
 			], options)
-    .then(([MapView, Map, MapImageLayer]) => {
+    .then(([MapView, Map]) => {
       var newMap = new Map({
         basemap: 'streets',
       });
@@ -33,22 +33,6 @@ class Webmap extends Component {
         zoom: 6.5,
         center: [-114.182650, 45.055278]
       });
-
-      var layer = new MapImageLayer({
-        url: adminBoundID,
-        sublayers: [{
-          id: 2,
-          visible: false
-        },{
-          id: 1,
-          visible: false
-        }, {
-          id: 0,
-          visible: false
-        }]
-      });
-
-      newMap.add(layer);
 
 			this.setState({view, newMap});
     });
@@ -90,9 +74,29 @@ class Webmap extends Component {
 		} else {
 			esriLoader.loadModules([
 				'esri/Graphic',
-				'esri/PopupTemplate'
+				'esri/PopupTemplate',
+        'esri/tasks/QueryTask',
+        'esri/tasks/support/Query',
+        'esri/layers/MapImageLayer'
 				], options)
-			.then(([Graphic, PopupTemplate]) => {
+			.then(([Graphic, PopupTemplate, QueryTask, Query, MapImageLayer]) => {
+
+        var layer = new MapImageLayer({
+          url: adminBoundID,
+          sublayers: [{
+            id: 2,
+            visible: false
+          },{
+            id: 1,
+            visible: false
+          }, {
+            id: 0,
+            visible: false
+          }]
+        });
+
+        this.state.newMap.add(layer);
+
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
 
@@ -104,14 +108,16 @@ class Webmap extends Component {
 
 					var attributes = {
 						fullAddress: address.address.formattedAddress,
-						confidence: address.confidence
+						confidence: address.confidence,
+            image: "idahostateseal.png"
 					};
 
 					var popup = new PopupTemplate({
-						title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>"
+						title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>",
+            content: "<input></input>"
 					});
 
-					var graphic = new Graphic({
+					var addressGraphic = new Graphic({
 						geometry: point,
 						attributes: attributes,
 						symbol: {
@@ -126,12 +132,34 @@ class Webmap extends Component {
 						popupTemplate: popup
   				});
 
-					this.state.view.graphics.add(graphic);
+          var queryCountiesTask = new QueryTask({
+            url: `${adminBoundID}\\1`
+          });
 
+          var query = new Query({
+            returnGeometry: true,
+            outFields: ['*'],
+            geometry: point,
+            spatialRelationship: 'intersects',
+          });
+          queryCountiesTask.execute(query)
+          .then( result => {
+            var {attributes, geometry} = result.features[0];
+
+            this.state.view.goTo(geometry);
+            layer.sublayers.map(subLayer => {
+              if(subLayer.id === 1) {
+                subLayer.visible = true;
+                subLayer.definitionExpression = `CountyName = '${attributes.CountyName}'`;
+              }
+            });
+          });
+
+					this.state.view.graphics.add(addressGraphic);
 				});
 			});
 		}
-    
+
   };
 
   render() {
