@@ -28,7 +28,7 @@ class App extends Component {
     console.log(icon);
 
     if(!this.state.collapsed) {
-      sidePannel.style.left = "-430px";
+      sidePannel.style.left = "-450px";
       map.style.width = '100%';
       icon.className = 'fa fa-chevron-right';
       this.setState({collapsed: true});
