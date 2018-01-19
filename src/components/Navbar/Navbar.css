@@ -4,6 +4,7 @@
   color: white;
   font-family: fantasy;
   font-size: 30px;
+  flex: 0 1 auto;
   display: flex;
   justify-content: flex-start;
   align-items: center;
