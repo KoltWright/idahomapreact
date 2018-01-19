@@ -10,7 +10,7 @@ class Sidepannel extends Component {
 	  this.state = {
 	     queryStr: '',
 	     queryStrVis: '',
-	     suggestedAddrs: []
+	     suggestedAddrs: [],
 	    }
   }
 
@@ -35,30 +35,53 @@ class Sidepannel extends Component {
   }
 
   autoFillqueryStr = (mappedAddr) => {
-	var queryStrVis = mappedAddr.address.formattedAddress;
-	var queryStr = mappedAddr.address.formattedAddress;
+	  var queryStrVis = mappedAddr.address.formattedAddress;
+	  var queryStr = mappedAddr.address.formattedAddress;
   	this.setState({queryStrVis, queryStr, suggestedAddrs: []});
 	this.props.getAddressesToLocate([mappedAddr]);
   }
 
   submitQuery = () => {
-  	  this.props.getAddressesToLocate(this.state.suggestedAddrs);
-	  this.setState({queryStrVis: "", queryStr: "", suggestedAddrs: []});
+  	this.props.getAddressesToLocate(this.state.suggestedAddrs);
+  }
+
+  clearQuery = () => {
+    this.setState({queryStr: '', queryStrVis: '', suggestedAddrs: []});
   }
 
   render() {
     return (
       <div id="side-pannel">
-        <input type="text" value={this.state.queryStrVis} onChange={(e) => this.getAddress(e.target.value)}></input>
-        <button onClick={this.submitQuery}>Search</button>
-		{
-			this.state.suggestedAddrs.map((val, index) => (
-				<div id={index.toString()} key={index.toString()} value={val.address.formattedAddress} onClick={(e) => this.autoFillqueryStr(this.state.suggestedAddrs[e.target.id])}>
-					{val.address.formattedAddress}
+				<div id="side-pannel-search">
+					<div id="search-toolbar">
+            <div id="address-input">
+              <input type="text" value={this.state.queryStrVis} onChange={(e) => this.getAddress(e.target.value)} placeholder="Search for Address"></input>
+            </div>
+            <div id="search-button" onClick={this.submitQuery}>
+              <div className="tool-tip">
+                <i className="fa fa-search fa-lg" aria-hidden="true"></i>
+                <span className="tool-tip-text">
+                  <div className="tail"></div>
+                  Search
+                </span>
+              </div>
+            </div>
+            <div id="clear-search" onClick={this.clearQuery}>
+              <div className="tool-tip">
+                <i className="fa fa-times fa-lg" aria-hidden="true"></i>
+                <span className="tool-tip-text">Clear Search</span>
+              </div>
+            </div>
+					</div>
+          {
+      			this.state.suggestedAddrs.map((val, index) => (
+      				<div id={index.toString()} className="search-result" key={index.toString()} value={val.address.formattedAddress} onClick={(e) => this.autoFillqueryStr(this.state.suggestedAddrs[e.target.id])}>
+      					{val.address.formattedAddress}
+      				</div>
+      				)
+      			)
+      		}
 				</div>
-				)
-			)
-		}
       </div>
     )
   }

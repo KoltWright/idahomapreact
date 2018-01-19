@@ -26,13 +26,13 @@ class App extends Component {
         <div className="content">
           <div className="left">
             <Sidepannel 
-			getAddressesToLocate={this.getAddressesToLocate}
-			/>
+							getAddressesToLocate={this.getAddressesToLocate}
+						/>
           </div>
           <div className="right">
             <Webmap
-			addressesToLocate={this.state.addressesToLocate}
-			/>
+							addressesToLocate={this.state.addressesToLocate}
+						/>
           </div>
         </div>
       </div>

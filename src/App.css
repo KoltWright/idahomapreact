@@ -81,7 +81,7 @@ html {
 }
 
 .content {
-  height: 100vh;
+  height: 95vh;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -98,4 +98,5 @@ html {
   min-width: 400px;
   max-width: 450px;
   border-right: solid black 3px;
+	background-color: #CECECE;
 }

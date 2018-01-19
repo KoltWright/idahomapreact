@@ -151,6 +151,7 @@ class Webmap extends Component {
               if(subLayer.id === 1) {
                 subLayer.visible = true;
                 subLayer.definitionExpression = `CountyName = '${attributes.CountyName}'`;
+								return subLayer;
               }
             });
           });
