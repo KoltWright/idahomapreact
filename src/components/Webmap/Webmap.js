@@ -78,7 +78,7 @@ class Webmap extends Component {
   				});
 					addressGraphicLayer.add(graphic);
 				});
-        this.state.map.add(addressGraphicLayer);
+        this.state.newMap.add(addressGraphicLayer);
 			});
 		} else {
 			esriLoader.loadModules([
@@ -166,6 +166,8 @@ class Webmap extends Component {
           });
 
 					this.state.view.graphics.add(addressGraphic);
+
+          setTimeout(this.state.view.graphics.remove(addressGraphic), 5000);
 				});
 			});
 		}
