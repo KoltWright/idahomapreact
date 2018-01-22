@@ -3,11 +3,16 @@
   width: 100%;
   position: absolute;
   left: 0;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
 }
 
 #side-pannel-search {
-  padding: 40px 20px;
-	height: auto;
+  padding-top: 35px;
+  width: 85%;
+	height: 48%;
 }
 
 #search-toolbar {
@@ -107,4 +112,14 @@ i {
   border: solid 1px gray;
   border-top: 0px;
   padding: 5px;
+}
+
+.divide-line{
+  width: 90%;
+  display:block;
+  border:none;
+  color:white;
+  height:3px;
+  background:black;
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 350, from(#000), to(#fff));
 }

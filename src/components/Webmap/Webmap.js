@@ -37,7 +37,6 @@ class Webmap extends Component {
       });
 
       var addressGraphicLayer = new GraphicsLayer();
-
       newMap.add(addressGraphicLayer);
 
 			this.setState({view, newMap, addressGraphicLayer});
@@ -49,11 +48,9 @@ class Webmap extends Component {
 
 		if (addressesToLocate.length > 1) {
 			esriLoader.loadModules([
-        'esri/layers/GraphicsLayer',
 				'esri/Graphic'
 				], options)
-			.then(([GraphicsLayer, Graphic]) => {
-        var addressGraphicLayer = new GraphicsLayer()
+			.then(([Graphic]) => {
 
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
@@ -76,10 +73,14 @@ class Webmap extends Component {
       				}
 						}
   				});
-					addressGraphicLayer.add(graphic);
+					this.state.addressGraphicLayer.add(graphic);
 				});
+<<<<<<< HEAD
         this.state.newMap.add(addressGraphicLayer);
+=======
+>>>>>>> 2d426719aa36159bec8dd3680d9de35dc770af3c
 			});
+      console.log(this.state.newMap.layers);
 		} else {
 			esriLoader.loadModules([
 				'esri/Graphic',
