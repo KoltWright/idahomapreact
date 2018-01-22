@@ -73,15 +73,10 @@ class Webmap extends Component {
       				}
 						}
   				});
-					this.state.addressGraphicLayer.add(graphic);
+					this.state.addressGraphicLayer.graphics.add(graphic);
 				});
-<<<<<<< HEAD
-        this.state.newMap.add(addressGraphicLayer);
-=======
->>>>>>> 2d426719aa36159bec8dd3680d9de35dc770af3c
 			});
-      console.log(this.state.newMap.layers);
-		} else {
+		} else if (addressesToLocate.length === 1) {
 			esriLoader.loadModules([
 				'esri/Graphic',
 				'esri/PopupTemplate',
@@ -165,13 +160,12 @@ class Webmap extends Component {
               }
             });
           });
-
 					this.state.view.graphics.add(addressGraphic);
-
-          setTimeout(this.state.view.graphics.remove(addressGraphic), 5000);
 				});
 			});
-		}
+		} else {
+      this.state.addressGraphicLayer.removeAll();
+    }
 
   };
 

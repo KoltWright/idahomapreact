@@ -47,7 +47,11 @@ class Sidepannel extends Component {
   }
 
   clearQuery = () => {
-    this.setState({queryStr: '', queryStrVis: '', suggestedAddrs: []});
+    this.setState({
+      queryStr: '',
+      queryStrVis: '',
+      suggestedAddrs: []
+    }, () => this.props.getAddressesToLocate([]));
   }
 
   render() {
