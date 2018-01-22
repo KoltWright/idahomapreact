@@ -40,7 +40,6 @@ class Webmap extends Component {
       newMap.add(addressGraphicLayer);
 
 			this.setState({view, newMap, addressGraphicLayer});
-      console.log(this.state.view.allLayers)
     });
   }
 
@@ -49,11 +48,9 @@ class Webmap extends Component {
 
 		if (addressesToLocate.length > 1) {
 			esriLoader.loadModules([
-        'esri/layers/GraphicsLayer',
 				'esri/Graphic'
 				], options)
-			.then(([GraphicsLayer, Graphic]) => {
-        var addressGraphicLayer = new GraphicsLayer()
+			.then(([Graphic]) => {
 
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
@@ -76,9 +73,8 @@ class Webmap extends Component {
       				}
 						}
   				});
-					addressGraphicLayer.add(graphic);
+					this.state.addressGraphicLayer.add(graphic);
 				});
-        this.state.newMap.add(addressGraphicLayer);
 			});
       console.log(this.state.newMap.layers);
 		} else {

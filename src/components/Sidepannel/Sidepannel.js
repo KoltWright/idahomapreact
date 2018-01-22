@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import './Sidepannel.css';
 import {bingKey} from '../../config.js';
+import ResultsPane from '../ResultsPane/ResultsPane.js';
 
 class Sidepannel extends Component {
   constructor (props) {
@@ -25,7 +26,7 @@ class Sidepannel extends Component {
 	  this.setState({queryStr, queryStrVis});
 	}
 
-	axios.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${queryStr}&maxResults=6&key=${bingKey}`)
+	axios.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${queryStr}&maxResults=3&key=${bingKey}`)
 	.then(res => {
 	  var possAddrs = res.data.resourceSets[0].resources;
 	  var suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
@@ -82,6 +83,8 @@ class Sidepannel extends Component {
       			)
       		}
 				</div>
+        <div className="divide-line"></div>
+        <ResultsPane />
       </div>
     )
   }
