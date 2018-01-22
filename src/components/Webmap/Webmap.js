@@ -37,10 +37,10 @@ class Webmap extends Component {
       });
 
       var addressGraphicLayer = new GraphicsLayer();
-
       newMap.add(addressGraphicLayer);
 
 			this.setState({view, newMap, addressGraphicLayer});
+      console.log(this.state.view.allLayers)
     });
   }
 
@@ -78,8 +78,9 @@ class Webmap extends Component {
   				});
 					addressGraphicLayer.add(graphic);
 				});
-        this.state.map.add(addressGraphicLayer);
+        this.state.newMap.add(addressGraphicLayer);
 			});
+      console.log(this.state.newMap.layers);
 		} else {
 			esriLoader.loadModules([
 				'esri/Graphic',
