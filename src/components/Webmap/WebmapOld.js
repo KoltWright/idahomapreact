@@ -20,8 +20,8 @@ const mapSymbology = {
 };
 
 var extentCalc = (coordsArr) => {
-  let yValues = []
-  let xValues = []
+  var yValues = []
+  var xValues = []
   coordsArr.map((val) => {
     console.log(val);
     yValues.push(val[1]);
@@ -29,10 +29,10 @@ var extentCalc = (coordsArr) => {
   });
 
   return {
-    xmin: Math.min.apply(null, xValues) - 0.2,
-    ymin: Math.min.apply(null, yValues) - 0.2,
-    xmax: Math.max.apply(null, xValues) + 0.2,
-    ymax: Math.max.apply(null, yValues) + 0.2,
+    xmin: Math.min.apply(null, xValues) - 0.5,
+    ymin: Math.min.apply(null, yValues) - 0.5,
+    xmax: Math.max.apply(null, xValues) + 0.5,
+    ymax: Math.max.apply(null, yValues) + 0.5,
   };
 };
 
@@ -42,17 +42,20 @@ class Webmap extends Component {
 	  this.state = {
 	     view: {},
 			 newMap: {},
-       graphicLayer: {},
+       addressGraphicLayer: {},
+       countyMapImageLayer: {},
+       zoomed: false
 	    }
-  };
+  }
 
   componentDidMount() {
     esriLoader.loadModules([
       'esri/views/MapView',
       'esri/Map',
       'esri/layers/GraphicsLayer',
+      'esri/layers/MapImageLayer'
 			], options)
-    .then(([MapView, Map, GraphicsLayer]) => {
+    .then(([MapView, Map, GraphicsLayer, MapImageLayer]) => {
       var newMap = new Map({
         basemap: 'streets',
       });
@@ -69,35 +72,44 @@ class Webmap extends Component {
         }
       });
 
-      var graphicLayer = new GraphicsLayer();
-      newMap.add(graphicLayer);
+      var addressGraphicLayer = new GraphicsLayer();
+      newMap.add(addressGraphicLayer);
 
-			this.setState({view, newMap, graphicLayer});
+      var countyMapImageLayer = new MapImageLayer({
+        url: adminBoundID,
+        sublayers: [{
+          id: 2,
+          visible: false
+        },{
+          id: 1,
+          visible: false
+        }, {
+          id: 0,
+          visible: false
+        }]
+      });
+      newMap.add(countyMapImageLayer);
+
+			this.setState({view, newMap, addressGraphicLayer, countyMapImageLayer});
     });
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
   	var {addressesToLocate, clearAll} = nextProps;
+    console.log()
+    if (clearAll) {
+      this.state.addressGraphicLayer.removeAll();
 
-    esriLoader.loadModules([
-      'esri/Graphic',
-      'esri/geometry/Polyline',
-      'esri/PopupTemplate',
-      'esri/geometry/Extent',
-      'esri/tasks/QueryTask',
-      'esri/tasks/support/Query',
-    ], options)
-    .then(([Graphic, Polyline, PopupTemplate, Extent, QueryTask, Query]) => {
-      if (clearAll) {
+    } else if (addressesToLocate.length > 1) {
+      this.state.addressGraphicLayer.removeAll();
 
-        this.state.graphicLayer.removeAll();
+      var paths = [];
 
-      } else if (addressesToLocate.length > 1) {
-
-        this.state.graphicLayer.removeAll();
-
-        var paths = [];
-
+			esriLoader.loadModules([
+				'esri/Graphic',
+        'esri/geometry/Polyline'
+				], options)
+			.then(([Graphic, Polyline]) => {
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
 
@@ -113,22 +125,27 @@ class Webmap extends Component {
             geometry: point,
           }, mapSymbology));
 
-          this.state.graphicLayer.add(addressGraphic);
+					this.state.addressGraphicLayer.add(addressGraphic);
 				});
 
-        var lineExtent = extentCalc(paths);
-
-        console.log(lineExtent);
-
-        this.state.view.extent = new Extent({
-          xmin: lineExtent.xmin,
-          ymin: lineExtent.ymin,
-          xmax: lineExtent.xmax,
-          ymax: lineExtent.ymax,
+        var polyline = new Polyline({
+          hasZ: false,
+          hasM: false,
+          paths: paths
         });
 
-  		} else if (addressesToLocate.length === 1) {
-        this.state.graphicLayer.removeAll();
+        this.state.view.goTo({target: polyline});
+			});
+		} else if (addressesToLocate.length === 1) {
+      this.state.addressGraphicLayer.removeAll();
+			esriLoader.loadModules([
+				'esri/Graphic',
+				'esri/PopupTemplate',
+        'esri/geometry/Extent',
+        'esri/tasks/QueryTask',
+        'esri/tasks/support/Query',
+				], options)
+			.then(([Graphic, PopupTemplate, Extent, QueryTask, Query]) => {
 
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
@@ -142,7 +159,7 @@ class Webmap extends Component {
 					var attributes = {
 						fullAddress: address.address.formattedAddress,
 						confidence: address.confidence,
-           image: "idahostateseal.png"
+            image: "idahostateseal.png"
 					};
 
 					var popup = new PopupTemplate({
@@ -154,9 +171,9 @@ class Webmap extends Component {
 						geometry: point,
 						attributes: attributes,
 						popupTemplate: popup
-          }, mapSymbology));
+  				}, mapSymbology));
 
-          this.state.graphicLayer.add(addressGraphic);
+          this.state.addressGraphicLayer.add(addressGraphic);
 
           var queryCountiesTask = new QueryTask({
             url: `${adminBoundID}\\1`
@@ -185,24 +202,24 @@ class Webmap extends Component {
                 }
               }
             });
+            this.state.addressGraphicLayer.add(countyGraphic);
 
-           this.state.graphicLayer.add(countyGraphic);
+            var extentObj = extentCalc(geometry.rings[0]);
 
-           var polygonExtent = extentCalc(geometry.rings[0]);
+            this.state.view.extent = new Extent({
+              xmin: extentObj.xmin,
+              ymin: extentObj.ymin,
+              xmax: extentObj.xmax,
+              ymax: extentObj.ymax,
+            });
+          });
+				});
+			});
+		} else {
+      console.log("Not inside of Utah")
+    }
 
-           this.state.view.extent = new Extent({
-             xmin: polygonExtent.xmin,
-             ymin: polygonExtent.ymin,
-             xmax: polygonExtent.xmax,
-             ymax: polygonExtent.ymax,
-           });
-         });
-       });
-     } else {
-       console.log("Not inside of Utah")
-     }
-   });
- };
+  };
 
   render() {
     return (
