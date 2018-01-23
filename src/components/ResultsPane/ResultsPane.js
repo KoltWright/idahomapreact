@@ -16,7 +16,7 @@ class ResultsPane extends Component {
     return (
       <div id="results-pane-container">
         {displayNothing(this.state.displayType)(
-          <div>I have nothing to give</div>
+          <div></div>
         )}
       </div>
     )

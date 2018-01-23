@@ -39,7 +39,7 @@ class Sidepannel extends Component {
 	  var queryStrVis = mappedAddr.address.formattedAddress;
 	  var queryStr = mappedAddr.address.formattedAddress;
   	this.setState({queryStrVis, queryStr, suggestedAddrs: []});
-	this.props.getAddressesToLocate([mappedAddr]);
+	  this.props.getAddressesToLocate([mappedAddr]);
   }
 
   submitQuery = () => {
@@ -51,7 +51,7 @@ class Sidepannel extends Component {
       queryStr: '',
       queryStrVis: '',
       suggestedAddrs: []
-    }, () => this.props.getAddressesToLocate([]));
+    }, () => this.props.getAddressesToLocate(this.state.suggestedAddrs, true));
   }
 
   render() {

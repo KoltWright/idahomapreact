@@ -12,20 +12,19 @@ class App extends Component {
     super(props)
     this.state = {
     collapsed: false,
-	  addressesToLocate: []
+	  addressesToLocate: [],
+    clearAll: false
     }
   }
 
-  getAddressesToLocate = (addressesToLocate) => {
-  	this.setState({addressesToLocate});
+  getAddressesToLocate = (addressesToLocate, clearAll) => {
+  	this.setState({addressesToLocate, clearAll});
   }
 
   collapseSidePannel = () => {
     var sidePannel = document.getElementById('left');
     var map = document.getElementById('right');
     var icon = document.getElementsByTagName('i')[0];
-
-    console.log(icon);
 
     if(!this.state.collapsed) {
       sidePannel.style.left = "-450px";
@@ -56,6 +55,7 @@ class App extends Component {
           <div id="right">
             <Webmap
 							addressesToLocate={this.state.addressesToLocate}
+              clearAll={this.state.clearAll}
 						/>
           </div>
         </div>
