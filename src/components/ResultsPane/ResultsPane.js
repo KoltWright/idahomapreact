@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import renderIf from 'render-if';
 import './ResultsPane.css';
 
-const displayNothing = (displayType) => renderIf(displayType === "Nothing");
+const displayNothing = (queryStrVis, suggestedAddrs, querySubmitted) => {
+  return renderIf(queryStrVis === '' && suggestedAddrs.length === 0 && querySubmitted === true);
+};
 
 class ResultsPane extends Component {
   constructor(props) {
@@ -15,8 +17,9 @@ class ResultsPane extends Component {
   render() {
     return (
       <div id="results-pane-container">
-        {displayNothing(this.state.displayType)(
-          <div></div>
+        <h1>Results:</h1>
+        {displayNothing(this.props.queryStrVis, this.props.suggestedAddrs, this.props.querySubmitted)(
+          <div>This address is not a Valid Idaho Address</div>
         )}
       </div>
     )

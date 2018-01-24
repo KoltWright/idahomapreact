@@ -12,8 +12,9 @@ class Sidepannel extends Component {
 	     queryStr: '',
 	     queryStrVis: '',
 	     suggestedAddrs: [],
+       querySubmitted: false
 	    }
-  }
+  };
 
  getAddress = (queryStr) => {
 	var queryStrVis = queryStr;
@@ -39,18 +40,20 @@ class Sidepannel extends Component {
 	  var queryStrVis = mappedAddr.address.formattedAddress;
 	  var queryStr = mappedAddr.address.formattedAddress;
   	this.setState({queryStrVis, queryStr, suggestedAddrs: []});
-	  this.props.getAddressesToLocate([mappedAddr]);
+	  this.props.getAddressesToLocate([mappedAddr], false);
   }
 
   submitQuery = () => {
-  	this.props.getAddressesToLocate(this.state.suggestedAddrs);
+  	this.props.getAddressesToLocate(this.state.suggestedAddrs, false);
+    this.setState({querySubmitted: true});
   }
 
   clearQuery = () => {
     this.setState({
       queryStr: '',
       queryStrVis: '',
-      suggestedAddrs: []
+      suggestedAddrs: [],
+      querySubmitted: false
     }, () => this.props.getAddressesToLocate(this.state.suggestedAddrs, true));
   }
 
@@ -59,6 +62,12 @@ class Sidepannel extends Component {
       <div id="side-pannel">
 				<div id="side-pannel-search">
 					<div id="search-toolbar">
+            <div id="home-button">
+              <div className="tool-tip">
+                <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+                <span className="tool-tip-text">Default Extent</span>
+              </div>
+            </div>
             <div id="address-input">
               <input type="text" value={this.state.queryStrVis} onChange={(e) => this.getAddress(e.target.value)} placeholder="Search for Address"></input>
             </div>
@@ -88,7 +97,11 @@ class Sidepannel extends Component {
       		}
 				</div>
         <div className="divide-line"></div>
-        <ResultsPane />
+        <ResultsPane
+          queryStrVis={this.state.queryStrVis}
+          suggestedAddrs={this.state.suggestedAddrs}
+          querySubmitted={this.state.querySubmitted}
+        />
       </div>
     )
   }

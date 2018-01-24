@@ -23,7 +23,6 @@ var extentCalc = (coordsArr) => {
   let yValues = []
   let xValues = []
   coordsArr.map((val) => {
-    console.log(val);
     yValues.push(val[1]);
     xValues.push(val[0])
   });
@@ -117,8 +116,6 @@ class Webmap extends Component {
 				});
 
         var lineExtent = extentCalc(paths);
-
-        console.log(lineExtent);
 
         this.state.view.extent = new Extent({
           xmin: lineExtent.xmin,

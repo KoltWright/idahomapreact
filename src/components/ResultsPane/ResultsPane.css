@@ -1,0 +1,12 @@
+#results-pane-container {
+  width: 85%;
+  height: auto;
+  margin: 30px;
+}
+
+#results-pane-container > h1 {
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
