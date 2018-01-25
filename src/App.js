@@ -13,7 +13,8 @@ class App extends Component {
     this.state = {
     collapsed: false,
 	  addressesToLocate: [],
-    clearAll: false
+    clearAll: false,
+    resetDefaultMap: false
     }
   }
 
@@ -39,6 +40,14 @@ class App extends Component {
     }
   }
 
+  resetDefaultMap = () => {
+    this.setState({resetDefaultMap: true});
+  }
+
+  defaultMapReset = () => {
+    this.setState({resetDefaultMap: false});
+  }
+
   render() {
     return (
       <div className="App">
@@ -50,12 +59,15 @@ class App extends Component {
             </div>
             <Sidepannel
 							getAddressesToLocate={this.getAddressesToLocate}
+              resetDefaultMap={this.resetDefaultMap}
 						/>
           </div>
           <div id="right">
             <Webmap
 							addressesToLocate={this.state.addressesToLocate}
               clearAll={this.state.clearAll}
+              defaultMapReset={this.defaultMapReset}
+              resetDefaultMap={this.state.resetDefaultMap}
 						/>
           </div>
         </div>

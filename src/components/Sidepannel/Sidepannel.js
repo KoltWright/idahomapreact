@@ -62,9 +62,9 @@ class Sidepannel extends Component {
       <div id="side-pannel">
 				<div id="side-pannel-search">
 					<div id="search-toolbar">
-            <div id="home-button">
+            <div id="home-button" onClick={this.props.resetDefaultMap}>
               <div className="tool-tip">
-                <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+                <i className="fa fa-home fa-lg" aria-hidden="true"></i>
                 <span className="tool-tip-text">Default Extent</span>
               </div>
             </div>

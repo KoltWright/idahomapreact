@@ -87,6 +87,11 @@ class Webmap extends Component {
       'esri/tasks/support/Query',
     ], options)
     .then(([Graphic, Polyline, PopupTemplate, Extent, QueryTask, Query]) => {
+      if (this.props.resetDefaultMap) {
+        this.state.view.zoom = 6.5;
+        this.state.view.center = [-114.182650, 45.619913];
+        this.props.defaultMapReset()
+      }
       if (clearAll) {
 
         this.state.graphicLayer.removeAll();
