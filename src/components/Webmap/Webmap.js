@@ -87,11 +87,7 @@ class Webmap extends Component {
       'esri/tasks/support/Query',
     ], options)
     .then(([Graphic, Polyline, PopupTemplate, Extent, QueryTask, Query]) => {
-      if (this.props.resetDefaultMap) {
-        this.state.view.zoom = 6.5;
-        this.state.view.center = [-114.182650, 45.619913];
-        this.props.defaultMapReset()
-      }
+
       if (clearAll) {
 
         this.state.graphicLayer.removeAll();
@@ -105,17 +101,15 @@ class Webmap extends Component {
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
 
-          console.log(address);
-          // var attributes = {
-					// 	fullAddress: address.address.formattedAddress,
-					// 	confidence: address.confidence,
-          //  image: "idahostateseal.png"
-					// };
-          //
-					// var popup = new PopupTemplate({
-					// 	title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>",
-          //   content: "<input></input>"
-					// });
+          var attributes = {
+						fullAddress: address.address.formattedAddress,
+						confidence: address.confidence
+					};
+
+					var popup = new PopupTemplate({
+						title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>",
+            content: 'If this is the address you are looking for please select the Submit button below.<br><button style="margin-top: 30px;">Submit</button></br>'
+					});
 
 					var point = {
 						type: type.toLowerCase(),
@@ -126,6 +120,8 @@ class Webmap extends Component {
           paths.push([coordinates[1], coordinates[0]]);
 
 					var addressGraphic = new Graphic(Object.assign({
+            attributes: attributes,
+            popupTemplate: popup,
             geometry: point,
           }, mapSymbology));
 
@@ -134,12 +130,15 @@ class Webmap extends Component {
 
         var lineExtent = extentCalc(paths);
 
-        this.state.view.extent = new Extent({
+        var view = this.state.view
+
+        view.extent = new Extent({
           xmin: lineExtent.xmin,
           ymin: lineExtent.ymin,
           xmax: lineExtent.xmax,
           ymax: lineExtent.ymax,
         });
+        this.setState({view: view});
 
   		} else if (addressesToLocate.length === 1) {
         this.state.graphicLayer.removeAll();
@@ -161,7 +160,6 @@ class Webmap extends Component {
 
 					var popup = new PopupTemplate({
 						title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>",
-            content: "<input></input>"
 					});
 
 					var addressGraphic = new Graphic(Object.assign({
@@ -204,17 +202,21 @@ class Webmap extends Component {
 
            var polygonExtent = extentCalc(geometry.rings[0]);
 
-           this.state.view.extent = new Extent({
+           var view = this.state.view;
+           view.extent = new Extent({
              xmin: polygonExtent.xmin,
              ymin: polygonExtent.ymin,
              xmax: polygonExtent.xmax,
              ymax: polygonExtent.ymax,
            });
+
+           this.setState({view: view});
          });
        });
      } else {
-       console.log("Not inside of Utah")
+       this.state.graphicLayer.removeAll();
      }
+
    });
  };
 
