@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import './App.css';
 
@@ -40,14 +39,6 @@ class App extends Component {
     }
   }
 
-  resetDefaultMap = () => {
-    this.setState({resetDefaultMap: true});
-  }
-
-  defaultMapReset = () => {
-    this.setState({resetDefaultMap: false});
-  }
-
   render() {
     return (
       <div className="App">
@@ -66,8 +57,6 @@ class App extends Component {
             <Webmap
 							addressesToLocate={this.state.addressesToLocate}
               clearAll={this.state.clearAll}
-              defaultMapReset={this.defaultMapReset}
-              resetDefaultMap={this.state.resetDefaultMap}
 						/>
           </div>
         </div>

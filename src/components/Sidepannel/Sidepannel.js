@@ -62,12 +62,6 @@ class Sidepannel extends Component {
       <div id="side-pannel">
 				<div id="side-pannel-search">
 					<div id="search-toolbar">
-            <div id="home-button" onClick={this.props.resetDefaultMap}>
-              <div className="tool-tip">
-                <i className="fa fa-home fa-lg" aria-hidden="true"></i>
-                <span className="tool-tip-text">Default Extent</span>
-              </div>
-            </div>
             <div id="address-input">
               <input type="text" value={this.state.queryStrVis} onChange={(e) => this.getAddress(e.target.value)} placeholder="Search for Address"></input>
             </div>

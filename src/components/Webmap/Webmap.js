@@ -22,7 +22,7 @@ const mapSymbology = {
 var extentCalc = (coordsArr) => {
   let yValues = []
   let xValues = []
-  coordsArr.map((val) => {
+  coordsArr.forEach((val) => {
     yValues.push(val[1]);
     xValues.push(val[0])
   });
@@ -104,6 +104,18 @@ class Webmap extends Component {
 
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
+
+          console.log(address);
+          // var attributes = {
+					// 	fullAddress: address.address.formattedAddress,
+					// 	confidence: address.confidence,
+          //  image: "idahostateseal.png"
+					// };
+          //
+					// var popup = new PopupTemplate({
+					// 	title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>",
+          //   content: "<input></input>"
+					// });
 
 					var point = {
 						type: type.toLowerCase(),
