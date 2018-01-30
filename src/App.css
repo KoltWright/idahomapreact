@@ -91,6 +91,7 @@ html {
 	justify-content: center;
 	border-radius: 0px 10px 10px 0px;
 	border-right: solid black 3px;
+	cursor: pointer;
 }
 
 #right {

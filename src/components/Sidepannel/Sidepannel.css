@@ -28,6 +28,10 @@ i {
   color: gray;
 }
 
+i:active {
+  color: #E8E8E8;
+}
+
 #search-toolbar > div {
   height: 100%;
   display: flex;
@@ -53,10 +57,12 @@ i {
   height: 80%;
   border-right: solid 2px gray;
   padding-right: 10px;
+  cursor: pointer;
 }
 
 #clear-search {
   padding-right: 10px;
+  cursor: pointer;
 }
 
 .tool-tip {
