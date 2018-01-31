@@ -93,6 +93,24 @@ class Webmap extends Component {
         this.state.graphicLayer.removeAll();
 
       } else if (addressesToLocate.length > 1) {
+        let viewPopup = this.state.view;
+        viewPopup.popup.actions = [];
+        this.setState({view: viewPopup});
+
+        var testAction = {
+          title: 'Select Address',
+          id: 'select-address',
+          className: 'fa fa-paper-plane'
+        }
+
+        this.state.view.popup.actions.push(testAction);
+
+        this.state.view.popup.viewModel.on('trigger-action', (e) => {
+          if (e.action.id === 'select-address') {
+            var selectedAddress = this.state.view.popup.viewModel.selectedFeature.attributes.fullAddress
+            this.props.submitAddressFromMap(selectedAddress);
+          }
+        })
 
         this.state.graphicLayer.removeAll();
 
@@ -108,7 +126,7 @@ class Webmap extends Component {
 
 					var popup = new PopupTemplate({
 						title: "Full Address: {fullAddress}<br>Confidence Level: {confidence}</br>",
-            content: 'If this is the address you are looking for please select the Submit button below.<br><button style="margin-top: 30px;">Submit</button></br>'
+            content: 'If this is the address you are looking for please select the Select Address Button in the lower left of popup.'
 					});
 
 					var point = {
@@ -142,6 +160,10 @@ class Webmap extends Component {
 
   		} else if (addressesToLocate.length === 1) {
         this.state.graphicLayer.removeAll();
+
+        let viewPopup = this.state.view;
+        viewPopup.popup.actions = [];
+        this.setState({view: viewPopup});
 
 				addressesToLocate.forEach(address => {
 					var {coordinates, type} = address.point;
@@ -216,7 +238,6 @@ class Webmap extends Component {
      } else {
        this.state.graphicLayer.removeAll();
      }
-
    });
  };
 

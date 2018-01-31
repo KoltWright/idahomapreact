@@ -16,7 +16,13 @@ class Sidepannel extends Component {
       }
   };
 
-  getAddress = (queryStr) => {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.addressFromMap !== '') {
+      this.getAddress(nextProps.addressFromMap, true);
+    }
+  }
+
+  getAddress = (queryStr, fromMap) => {
     var queryStrVis = queryStr;
 
     if (!queryStr.match(/id/gi)) {
@@ -29,9 +35,18 @@ class Sidepannel extends Component {
 
     axios.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${queryStr}&maxResults=3&key=${bingKey}`)
     .then(res => {
-      var possAddrs = res.data.resourceSets[0].resources;
-      var suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
-      this.setState({suggestedAddrs});
+      if (!fromMap) {
+        var possAddrs = res.data.resourceSets[0].resources;
+        console.log(possAddrs);
+        var suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
+        this.setState({suggestedAddrs});
+      } else {
+        var possAddrs = res.data.resourceSets[0].resources;
+        console.log(possAddrs);
+        var suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
+        this.setState({suggestedAddrs}, this.autoFillqueryStr(this.state.suggestedAddrs));
+        console.log('fired');
+      }
     })
     .catch(err => console.log(err));
   }
@@ -51,7 +66,7 @@ class Sidepannel extends Component {
   submitQuery = () => {
     var tempArr = this.state.suggestedAddrs;
     var sugAddrsSubmited = tempArr.slice(0, tempArr.length);
-    
+
     if (sugAddrsSubmited.length === 0) {
       sugAddrsSubmited[0] = "Not in Idaho";
     }

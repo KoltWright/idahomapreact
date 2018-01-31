@@ -13,6 +13,7 @@ class App extends Component {
     collapsed: false,
 	  addressesToLocate: [],
     clearAll: false,
+    addressFromMap: ''
     }
   }
 
@@ -20,9 +21,13 @@ class App extends Component {
   	this.setState({addressesToLocate, clearAll});
   }
 
+  submitAddressFromMap = (addressFromMap) => {
+    this.setState({addressFromMap});
+  }
+
   collapseSidePannel = () => {
     var sidePannel = document.getElementById('left');
-    var map = document.getElementById('right');
+    var map = document.getElementById('right');''
     var icon = document.getElementsByTagName('i')[0];
 
     if(!this.state.collapsed) {
@@ -49,13 +54,14 @@ class App extends Component {
             </div>
             <Sidepannel
 							getAddressesToLocate={this.getAddressesToLocate}
+              addressFromMap={this.state.addressFromMap}
 						/>
           </div>
           <div id="right">
             <Webmap
 							addressesToLocate={this.state.addressesToLocate}
               clearAll={this.state.clearAll}
-              getAddressesToLocate={this.getAddressesToLocate}
+              submitAddressFromMap={this.submitAddressFromMap}
 						/>
           </div>
         </div>

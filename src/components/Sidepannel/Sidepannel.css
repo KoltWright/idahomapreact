@@ -119,6 +119,11 @@ i:active {
   border: solid 1px gray;
   border-top: 0px;
   padding: 5px;
+  cursor: pointer;
+}
+
+.search-result:hover {
+  background-color: #E8E8E8;
 }
 
 .divide-line{
