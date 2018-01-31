@@ -27,7 +27,7 @@ class App extends Component {
 
   collapseSidePannel = () => {
     var sidePannel = document.getElementById('left');
-    var map = document.getElementById('right');''
+    var map = document.getElementById('right');
     var icon = document.getElementsByTagName('i')[0];
 
     if(!this.state.collapsed) {

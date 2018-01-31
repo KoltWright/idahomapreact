@@ -12,13 +12,18 @@ class Sidepannel extends Component {
        queryStr: '',
        queryStrVis: '',
        suggestedAddrs: [],
-       sugAddrsSubmited: []
+       sugAddrsSubmited: [],
+       addressFromMap: false
       }
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.addressFromMap !== '') {
-      this.getAddress(nextProps.addressFromMap, true);
+    if (nextProps.addressFromMap !== '' && this.props.addressFromMap !== nextProps.addressFromMap) {
+      let mappedAddr = this.state.suggestedAddrs.filter((val) => {
+        return val.address.formattedAddress === nextProps.addressFromMap;
+      })
+      console.log(mappedAddr);
+      this.autoFillQueryStr(mappedAddr[0]);
     }
   }
 
@@ -35,23 +40,14 @@ class Sidepannel extends Component {
 
     axios.get(`https://dev.virtualearth.net/REST/v1/Locations?query=${queryStr}&maxResults=3&key=${bingKey}`)
     .then(res => {
-      if (!fromMap) {
-        var possAddrs = res.data.resourceSets[0].resources;
-        console.log(possAddrs);
-        var suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
-        this.setState({suggestedAddrs});
-      } else {
-        var possAddrs = res.data.resourceSets[0].resources;
-        console.log(possAddrs);
-        var suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
-        this.setState({suggestedAddrs}, this.autoFillqueryStr(this.state.suggestedAddrs));
-        console.log('fired');
-      }
+      let possAddrs = res.data.resourceSets[0].resources;
+      let suggestedAddrs = possAddrs.filter((val) => val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho');
+      this.setState({suggestedAddrs});
     })
     .catch(err => console.log(err));
   }
 
-  autoFillqueryStr = (mappedAddr) => {
+  autoFillQueryStr = (mappedAddr) => {
     var queryStrVis = mappedAddr.address.formattedAddress;
     var queryStr = mappedAddr.address.formattedAddress.replace(/ /g, '%');
     this.setState({
@@ -116,7 +112,7 @@ class Sidepannel extends Component {
           </div>
           {
             this.state.suggestedAddrs.map((val, index) => (
-              <div id={index.toString()} className="search-result" key={index.toString()} value={val.address.formattedAddress} onClick={(e) => this.autoFillqueryStr(this.state.suggestedAddrs[e.target.id])}>
+              <div id={index.toString()} className="search-result" key={index.toString()} value={val.address.formattedAddress} onClick={(e) => this.autoFillQueryStr(this.state.suggestedAddrs[e.target.id])}>
                 {val.address.formattedAddress}
               </div>
               )

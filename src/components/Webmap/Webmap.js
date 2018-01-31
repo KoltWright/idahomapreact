@@ -89,7 +89,6 @@ class Webmap extends Component {
     .then(([Graphic, Polyline, PopupTemplate, Extent, QueryTask, Query]) => {
 
       if (clearAll) {
-
         this.state.graphicLayer.removeAll();
 
       } else if (addressesToLocate.length > 1) {
@@ -109,6 +108,7 @@ class Webmap extends Component {
           if (e.action.id === 'select-address') {
             var selectedAddress = this.state.view.popup.viewModel.selectedFeature.attributes.fullAddress
             this.props.submitAddressFromMap(selectedAddress);
+            this.state.view.popup.close()
           }
         })
 
