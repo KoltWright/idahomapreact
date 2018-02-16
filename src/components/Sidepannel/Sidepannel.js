@@ -31,10 +31,10 @@ class Sidepannel extends Component {
     var queryStrVis = queryStr;
 
     if (!queryStr.match(/id/gi)) {
-      queryStr = queryStr.replace(/ /g, "%").toUpperCase() + '%ID';
+      queryStr = queryStr.replace(/ /g, "%20").toUpperCase(); + '%20ID';
       this.setState({queryStr, queryStrVis});
     } else {
-      queryStr = queryStr.replace(/ /g, "%").toUpperCase();
+      queryStr = queryStr.replace(/ /g, "%20").toUpperCase();
       this.setState({queryStr, queryStrVis});
     }
 

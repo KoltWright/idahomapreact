@@ -50,8 +50,9 @@ class Webmap extends Component {
       'esri/views/MapView',
       'esri/Map',
       'esri/layers/GraphicsLayer',
+      'esri/widgets/BasemapToggle'
 			], options)
-    .then(([MapView, Map, GraphicsLayer]) => {
+    .then(([MapView, Map, GraphicsLayer, BasemapToggle]) => {
       var newMap = new Map({
         basemap: 'streets',
       });
@@ -71,6 +72,13 @@ class Webmap extends Component {
       var graphicLayer = new GraphicsLayer();
       newMap.add(graphicLayer);
 
+      var basemapToggle = new BasemapToggle({
+        view: view,
+        nextBasemap: 'satellite'
+      });
+
+      view.ui.add(basemapToggle, "bottom-right");
+
 			this.setState({view, newMap, graphicLayer});
     });
   };
@@ -84,7 +92,7 @@ class Webmap extends Component {
       'esri/PopupTemplate',
       'esri/geometry/Extent',
       'esri/tasks/QueryTask',
-      'esri/tasks/support/Query',
+      'esri/tasks/support/Query'
     ], options)
     .then(([Graphic, Polyline, PopupTemplate, Extent, QueryTask, Query]) => {
 
@@ -204,8 +212,8 @@ class Webmap extends Component {
           });
 
           queryCountiesTask.execute(query)
-          .then( result => {
-            var {attributes, geometry} = result.features[0];
+          .then( res => {
+            var {attributes, geometry} = res.features[0];
 
             var countyGraphic = new Graphic({
               geometry: geometry,

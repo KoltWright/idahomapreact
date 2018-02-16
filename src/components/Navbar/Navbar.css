@@ -6,13 +6,68 @@
   font-size: 30px;
   flex: 0 1 auto;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   background-color: black;
   }
+
+#navbar-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 
 #idaho-seal {
   height: 80px;
   width: 80px;
   padding-left: -20px;
+}
+
+.active {
+  width: auto;
+  opacity: 1;
+}
+
+.inactive {
+  width: 0px;
+  opacity: 0;
+}
+
+#navbar-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.navbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-left: 10px;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  color: black;
+  cursor: pointer;
+  border: solid 2px;
+}
+
+.navbar-button-active {
+  background-color: #CECECE;
+  border-color: white;
+}
+
+.navbar-button-inactive {
+  background-color: white;
+}
+
+.navbar-button:hover {
+  color: white;
+  background-color: black;
+  border: solid gray 2px;
+}
+
+a {
+  text-decoration: none;
 }
