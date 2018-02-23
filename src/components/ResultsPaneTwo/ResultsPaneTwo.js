@@ -24,10 +24,17 @@ class ResultsPaneTwo extends Component {
 
               return (
                 <div key={OBJECTID} className="address-result">
-                  <div>Address Status: {status}</div>
-                  <div>Full Address:</div>
-                  <div> {`${ADDRESS} ${CITY} ${STATE} ${ZIP}`}</div>
-                  <div>County: {`${COUNTY}`}</div>
+                  <div><b>Address Status:</b> {status}</div>
+                  <div className="full-address">
+                    <div>
+                      <b>Full Address: </b>
+                    </div>
+                    <div>
+                      <div>{`${ADDRESS}`}</div>
+                      <div> {` ${CITY}, ${STATE} ${ZIP}`}</div>
+                    </div>
+                  </div>
+                  <div><b>County:</b> {`${COUNTY}`}</div>
                 </div>
               )
             })

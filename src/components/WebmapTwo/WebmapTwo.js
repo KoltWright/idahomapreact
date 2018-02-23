@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import './WebmapTwo.css';
 
-import { adminBoundID, countryAddressUrl, userIdUSPS, bingKey } from '../../config.js'
+import { adminBoundID, countyAddressUrl, userIdUSPS, bingKey } from '../../config.js'
 
 const options = {url: 'https://js.arcgis.com/4.6/'};
 var totalAddrs = 0;
@@ -72,7 +72,7 @@ class WebmapTwo extends Component {
       view.ui.add(basemapToggle, 'bottom-right');
 
       var queryAddressesTask = new QueryTask({
-        url: `${countryAddressUrl}\\0`
+        url: `${countyAddressUrl}\\0`
       });
 
       var queryAddresses = new Query({
@@ -124,7 +124,7 @@ class WebmapTwo extends Component {
               .then(res => {
                 var parser = new DOMParser();
                 var xmlDoc = parser.parseFromString(res.data,"text/xml");
-                
+
                 if (xmlDoc.getElementsByTagName('Error').length === 0) {
                   attributes.ADDRESS = xmlDoc.getElementsByTagName('Address2')[0].innerHTML;
                   attributes.CITY = xmlDoc.getElementsByTagName('City')[0].innerHTML;
@@ -202,7 +202,11 @@ class WebmapTwo extends Component {
 
                 var sortedAddrs = this.state.sortedAddrs;
                 sortedAddrs[index][1].attributes.COUNTY = attributes.CountyName;
-                this.setState({sortedAddrs: sortedAddrs});
+                this.setState({sortedAddrs: sortedAddrs}, () => {
+                  if(addressUpdate) {
+                    this.props.getAddrsFromMap(this.state.sortedAddrs, this.state.countOfAddrs);
+                  }
+                });
 
                 var counties = countyGraphicLayer.graphics.items;
                 var addCounty = true;
@@ -264,9 +268,6 @@ class WebmapTwo extends Component {
           })
         });
       })
-    }
-    if(addressUpdate) {
-      this.props.getAddrsFromMap(this.state.sortedAddrs, this.state.countOfAddrs);
     }
   }
 

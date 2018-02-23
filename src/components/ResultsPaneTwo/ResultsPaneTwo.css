@@ -15,3 +15,20 @@
   border: 2px solid black;
   box-shadow: 5px 5px 5px gray;
 }
+
+.address-result > div {
+  margin: 10px;
+}
+
+b {
+  font-weight: bold;
+}
+
+.full-address {
+  display: flex;
+  flex-flow: row;
+}
+
+.full-address > div {
+  margin-right: 5px;
+}
