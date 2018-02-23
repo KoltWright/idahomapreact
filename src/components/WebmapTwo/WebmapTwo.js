@@ -7,16 +7,6 @@ import './WebmapTwo.css';
 import { adminBoundID, countyAddressUrl, userIdUSPS, bingKey } from '../../config.js'
 
 const options = {url: 'https://js.arcgis.com/4.6/'};
-var totalAddrs = 0;
-
-const highlightSymbol = {
-  type: "simple-fill",
-  style: 'none',
-  outline: {
-    width: 3,
-    color: "00FFFF"
-  }
-}
 
 class WebmapTwo extends Component {
   constructor (props) {
@@ -142,9 +132,9 @@ class WebmapTwo extends Component {
                       return val.address.adminDistrict === 'ID' && val.address.formattedAddress !== 'Idaho'
                     });
 
-                    attributes.ADDRESS = suggestedAddrs[0].address.addressLine;
-                    attributes.CITY = suggestedAddrs[0].address.locality;
-                    attributes.STATE = suggestedAddrs[0].address.adminDistrict;
+                    attributes.ADDRESS = suggestedAddrs[0].address.addressLine.toUpperCase();
+                    attributes.CITY = suggestedAddrs[0].address.locality.toUpperCase();
+                    attributes.STATE = suggestedAddrs[0].address.adminDistrict.toUpperCase();
                     attributes.ZIP = suggestedAddrs[0].address.postalCode;
                     this.setState({sortedAddrs: [...this.state.sortedAddrs, ['VARIFIED BY BING MAPS API', val]]});
                   })
@@ -241,26 +231,53 @@ class WebmapTwo extends Component {
         this.state.newMap.add(countyGraphicLayer);
 
         var highlightGraphic = new GraphicsLayer();
+
         this.state.newMap.add(highlightGraphic);
         this.state.view.on('pointer-move', (e) => {
           this.state.view.hitTest(e)
           .then((res) => {
+            console.log(res);
             var test = res.results.length > 0? true : false;
 
             if (test) {
               if (res.results.length === 1) {
                 highlightGraphic.removeAll();
 
-                var {attributes, geometry} = res.results[0].graphic;
+                var {attributes} = res.results[0].graphic;
 
-                var highlightAddress = new Graphic({
-                  geometry: geometry,
-                  attributes: attributes,
-                  symbol: highlightSymbol
-                });
+                var interectAddrs = this.state.sortedAddrs.filter(addr => {
+                  return attributes.CountyName === addr[1].attributes.COUNTY;
+                })
 
-                highlightGraphic.add(highlightAddress);
-                this.state.view.popup.open();
+                var highlightedGraphicArray = interectAddrs.map(intersectAddr => {
+
+                  var {attributes, geometry} = intersectAddr[1];
+
+                  var highlightAddress = new Graphic({
+                    geometry: geometry,
+                    attributes: attributes,
+                    type: 'point',
+                    symbol: {
+                      type: "simple-marker",
+                      color: "00FFFF",
+                      size: 8,
+                      outline: {
+                        width: 0.5,
+                        color: "00FFFF"
+                      }
+                    }
+                  });
+
+                  highlightAddress.popupTemplate = {
+                    title: "Valid Address Information",
+                    content: 'test tester {ADDRESS}'
+                  };
+
+                  return highlightAddress;
+                })
+
+                highlightGraphic.addMany(highlightedGraphicArray);
+                highlightGraphic.popup.open(highlightedGraphicArray[1]);
               }
             } else if (!test) {
               highlightGraphic.removeAll();

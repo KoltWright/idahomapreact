@@ -7,7 +7,38 @@ const finalResults = (countOfAddrs, addrsFromMap) => {
 };
 
 class ResultsPaneTwo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      notificationFired: false
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if (!this.state.notificationFired) {
+      this.setState({notificationFired: true}, () => {
+        this.notificationToUser(this.props.countOfAddrs, this.props.addrsFromMap)
+      })
+    };
+  }
+
+  notificationToUser = (countOfAddrs, addrsFromMap) => {
+    var invalidAddrs = addrsFromMap.filter((val) => val[0].substring(0, 7) === 'INVALID');
+    var notificationStr = 'The following addresses are Invalid:\n';
+
+    invalidAddrs.forEach((val) => {
+      var status = val[0];
+      var {ADDRESS, CITY, STATE, ZIP} = val[1].attributes;
+
+      notificationStr += `\nFull Address: ${ADDRESS} ${CITY}, ${STATE} ${ZIP}\nStatus: ${status}\n`;
+    })
+
+    setTimeout(() => alert(notificationStr), 1000);
+  }
+
   render() {
+
+
     return (
       <div id="results-pane-container-two">
         {finalResults(this.props.countOfAddrs, this.props.addrsFromMap)(
@@ -34,7 +65,7 @@ class ResultsPaneTwo extends Component {
                       <div> {` ${CITY}, ${STATE} ${ZIP}`}</div>
                     </div>
                   </div>
-                  <div><b>County:</b> {`${COUNTY}`}</div>
+                  <div><b>County:</b> {COUNTY? `${COUNTY}`: 'N/A'}</div>
                 </div>
               )
             })
