@@ -30,8 +30,8 @@ class Navbar extends Component {
       <div id='navbar'>
         <div id="navbar-left">
           <img id="idaho-seal" src="idahostateseal.png" alt="Idaho State Seal"/>
-          <h1 className={this.state.titleOneActive ? 'active': 'inactive'}>Idaho Addresses Part 1</h1>
-          <h1 className={this.state.titleTwoActive ? 'active': 'inactive'}>Idaho Addresses Part 2</h1>
+          <h1 className={this.state.titleOneActive ? 'active': 'inactive'}>Idaho Addresses Phase 1</h1>
+          <h1 className={this.state.titleTwoActive ? 'active': 'inactive'}>Idaho Addresses Phase 2</h1>
         </div>
         <div id="navbar-right">
           <Link to="/">

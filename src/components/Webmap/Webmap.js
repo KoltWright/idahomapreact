@@ -61,12 +61,7 @@ class Webmap extends Component {
         map: newMap,
         container: 'map-container',
         zoom: 6.5,
-        center: [-114.182650, 45.619913],
-        highlightOptions: {
-          color: [255, 255, 0, 1],
-          haloOpacity: 0.9,
-          fillOpacity: 0.2
-        }
+        center: [-114.182650, 45.619913]
       });
 
       var graphicLayer = new GraphicsLayer();

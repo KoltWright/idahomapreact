@@ -60,11 +60,11 @@ html {
   width: 100%
 }
 
-.content {
+.content-two {
   height: calc(100vh - 60px);
 }
 
-#left {
+#left-two {
 	visibility: visible;
 	position: absolute;
 	left: 0px;
@@ -94,9 +94,25 @@ html {
 	cursor: pointer;
 }
 
-#right {
+#right-two {
   width: calc(100vw - 450px);
   height: calc(100vh - 60px);
 	position: absolute;
 	right: 0px;
+}
+
+#left-two > div > h1 {
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+#address-results-container {
+	position: absolute;
+	left: 0px;
+	top:0px;
+	width: 100%;
+	height: calc(100% - 30px);
+	margin: 30px 0px 0px 30px;
 }
